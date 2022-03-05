@@ -13,9 +13,9 @@ tmpfile = "/tmp/autovpntmp.conf"
 
 
 argparser = argparse.ArgumentParser(description="Gets OpenVPN server list, distributes by country and establishes connection")
-argparser.add_argument("-c", help="Country short code", type=str)
+argparser.add_argument("-c", metavar="COUNTRY", help="Country short code", type=str)
 argparser.add_argument("-r", help="Random server", action="store_true")
-argparser.add_argument("-p", help="Connect via socks5 proxy. Format: <ip:port>.The use of VPN as a default gateway will be disabled in this case. You'll have to add your routes manually", type=str)
+argparser.add_argument("-p", metavar="PROXY:PORT", help="Connect via socks5 proxy. Format: <ip:port>.The use of VPN as a default gateway will be disabled in this case. You'll have to add your routes manually", type=str)
 args = argparser.parse_args()
 
 if args.c:
