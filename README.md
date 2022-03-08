@@ -22,6 +22,6 @@ optional arguments:
 
 ## Examples
 
-`./autovpn.py -c US -r`
+`sudo ./autovpn.py -c US -r`
 
-`./autovpn.py -p example.com:1080`
+`sudo ./autovpn.py -p example.com:1080`
