@@ -90,7 +90,9 @@ def CheckConnection():
     else:
         return False
 
-    
+if os.geteuid() != 0:
+    print("The script must be run as root!")
+    exit(0) 
 
 print("Getting list of VPN servers...", end="", flush=True)
 vpnlist = GetVPNList()     
