@@ -10,6 +10,8 @@ import time
 
 vpnurl = "https://www.vpngate.net/api/iphone/"
 tmpfile = "/tmp/autovpntmp.conf"
+#proxyip = "127.0.0.1"
+#proxyport = 9050
 
 
 argparser = argparse.ArgumentParser(description="Gets OpenVPN server list, distributes by country and establishes connection")
@@ -74,10 +76,15 @@ def Connect(proxy):
     if proxy:
         vpn = subprocess.call(["openvpn", "--pull-filter", "ignore", "redirect-gateway", "--socks-proxy", proxyip, str(proxyport), "--daemon",  "--connect-retry-max", "1", "--config", tmpfile])
     else:
-        subprocess.call(["openvpn", "--daemon", "--connect-retry-max", "1", "--config", tmpfile])
-    time.sleep(10)
+        vpn = subprocess.call(["openvpn", "--daemon", "--connect-retry-max", "1", "--config", tmpfile])
+    if not vpn:
+        time.sleep(10)
+        if CheckConnection():
+            return True
+    return False
+
+def CheckConnection():
     ipa = subprocess.Popen(["ip", "a"],stdout = subprocess.PIPE).communicate()[0]
-    #print(str(ipa))
     if "tun0" in str(ipa):
         return True
     else:
@@ -151,20 +158,24 @@ if not server:
                 break
         print("Wrong input")
 
-while True:
-    print("Trying " + vpnlist[country][server-1]["IP"] + "...", end="", flush=True)
-    SaveConfig(country, server-1)
-    if Connect(args.p):
-        print("Success")
-        break
-    else:
-        print("Fail")
-        server = PickRandomServer(country)
 
 try:
     while True:
+        print("Trying " + vpnlist[country][server-1]["IP"] + "...", end="", flush=True)
+        SaveConfig(country, server-1)
+        if Connect(args.p):
+            print("Success")
+        else:
+            print("Fail")
+            server = PickRandomServer(country)
+            continue
+
         print("Press Ctrl+C to drop vpn and exit")
-        input()
+        while True:
+            time.sleep(10)
+            if not CheckConnection():
+                print("Connection to " + vpnlist[country][server-1]["IP"] + " lost.")
+                break
 except KeyboardInterrupt:
     subprocess.call(["killall", "-9", "openvpn"])
     
