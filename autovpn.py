@@ -58,7 +58,7 @@ def SaveConfig(country, server):
     if os.path.isfile(tmpfile):
         os.remove(tmpfile)
     with open(tmpfile, "w") as conffile:
-        decoded = base64.b64decode(vpnlist[country][server-1]["OpenVPN_ConfigData_Base64"])
+        decoded = base64.b64decode(vpnlist[country][server]["OpenVPN_ConfigData_Base64"])
         conffile.write(decoded.decode("utf-8"))
 
  
